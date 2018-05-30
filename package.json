@@ -1,0 +1,31 @@
+{
+  "name": "spc-bot-yosano",
+  "version": "0.1.0",
+  "description": "Slack Bot for NITSC Programming Club",
+  "main": "bot.js",
+  "scripts": {
+    "start": "./node_modules/.bin/babel-node bot.js"
+  },
+  "author": "Oyakodon",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oyakodon/spc-bot-yosano.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oyakodon/spc-bot-yosano/issues"
+  },
+  "homepage": "https://github.com/oyakodon/spc-bot-yosano#readme",
+  "license": "MIT",
+  "dependencies": {
+    "babel-preset-stage-0": "^6.24.1",
+    "botkit": "^0.6.14",
+    "eslint": "^4.19.1",
+    "mathjs": "^4.2.2",
+    "node-schedule": "^1.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}
