@@ -14,6 +14,11 @@ export default class Hanshin
             this.db = JSON.parse(`{ "hash": { "334": "334" }, "winner": {} }`);
             this.save();
         }
+
+        math.config({
+            number: "BigNumber",
+            precision: 64
+        });
     }
 
     isValid(expr)
@@ -106,31 +111,39 @@ export default class Hanshin
         // 33-4の数が少ない
         let lhs = (l.match(/4/g) || []).length;
         let rhs = (r.match(/4/g) || []).length;
+        console.log("compare : rule1 = " + (lhs < rhs));
         if (lhs != rhs) return lhs < rhs;
 
         // sqrt, !の数が少ない
         lhs = (l.match(/sqrt/g) || []).length + (l.match(/!/g) || []).length;
         rhs = (r.match(/sqrt/g) || []).length + (r.match(/!/g) || []).length;
+        console.log("compare : rule2 = " + (lhs < rhs));
         if (lhs != rhs) return lhs < rhs;
 
         // 長さが短い
         lhs = l.length - ((l.match(/sqrt/g) || []).length * 3);
         rhs = r.length - ((r.match(/sqrt/g) || []).length * 3);
+        console.log("compare : rule3 = " + (lhs < rhs));
         return lhs < rhs;
     }
 
     set(expr, force = false)
     {
         if (!this.isValid(expr)) return null;
+        console.log("pass");
         let n;
         try
         {
             const v = math.eval(expr);
-            if (v.d != 1) return null;
-            n = v.n;
+            n = math.number(v);
+            if (!math.isInteger(n))
+            {
+              return null;
+            }
         }
         catch (e)
         {
+            console.log(e);
             return null;
         }
         if (!force && n in this.db.hash && !this.compare(expr, this.db.hash[n])) return null;

@@ -75,7 +75,7 @@ const str_to_hanshin = (str) =>
       return repl_tbl.hasOwnProperty(ch) ? repl_tbl[ch] : ch;
   }).join("");
 
-  const re_expr = ret.match(/[0-9\+\-\*\/\(\)\!\sqrt]+/g);
+  const re_expr = ret.match(/^[0-9\+\-\*\/\(\)\!\(sqrt)]+$/);
   if (re_expr == null) return null;
 
   console.log("str_to_hanshin: ret = " + ret);
@@ -90,7 +90,7 @@ const str_to_hanshin = (str) =>
     console.log("全体: v = " + v);
     let han = hanshin.get(v);
     console.log("han = " + han);
-    return han == null ? ":no_good: " + v + " :no_good:" : (ishan ? v : han) + "";
+    return han == null ? ":no_good: " + v + " :no_good:" : (ishan ? v : han.replace("sqrt", "√")) + "";
   } else
   {
     // 文字列に式が含まれている
@@ -104,7 +104,7 @@ const str_to_hanshin = (str) =>
       console.log("部分: v = " + v);
       let han = v == null ? null : hanshin.get(v);
       console.log("han = " + han);
-      ret = ret.replace(elm, han == null ? ":no_good: " + v + " :no_good:" : (ishan ? v : han));
+      ret = ret.replace(elm, han == null ? ":no_good: " + v + " :no_good:" : (ishan ? v : han.replace("sqrt", "√")));
     });
     return err ? null : ret;
   }
@@ -112,15 +112,16 @@ const str_to_hanshin = (str) =>
 
 const expr_to_v = (expr) =>
 {
+  hanshin.set(expr);
   try
   {
-      const v = math.eval(expr);
-      console.log("v.d = " + v.d + ", v.n = " + v.n);
-      if (v.d != 1) return null;
-      return v.n;
+     const v = math.eval(expr);
+     const n = math.number(v);
+     return math.isInteger(n) ? n : null;
   }
   catch (e)
   {
+      console.log(e);
       return null;
   }
 }
@@ -149,10 +150,11 @@ const count_down_procon = () =>
   return null;
 }
 
-process.env.DEBUG = true;
+// process.env.DEBUG = true;
 
 math.config({
-  number: "Fraction"
+  number: "BigNumber",
+  precision: 64
 });
 
 const controller = Botkit.slackbot({
